@@ -82,7 +82,7 @@ import CollapsibleSection from "../shared/CollapsibleSection.vue";
 export default {
   name: "RobotBuilder",
   created() {
-    this.$store.dispatch("getParts");
+    this.$store.dispatch("robots/getParts");
   },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
@@ -117,7 +117,7 @@ export default {
       };
     },
     avaliableParts() {
-      return this.$store.state.parts;
+      return this.$store.state.robots.parts;
     }
   },
   methods: {
@@ -131,7 +131,15 @@ export default {
       const torsoCost = robot.torso.cost ? robot.torso.cost : 0;
       const cost = headCost + leftArmCost + rightArmCost + baseCost + torsoCost;
 
-      this.$store.commit("addRobotToCart", Object.assign({}, robot, { cost }));
+      /**
+       * Initial Approach
+       * You << commit >> mutations BUT you << dispatch >> actions
+       * this.$store.commit("addRobotToCart", Object.assign({}, robot, { cost }));
+       **/
+      this.$store
+        .dispatch("robots/addRobotToCart", Object.assign({}, robot, { cost }))
+        .then(() => this.$router.push("/cart"));
+
       this.addedToCart = true;
     }
   }

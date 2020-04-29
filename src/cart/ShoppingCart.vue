@@ -11,7 +11,7 @@
       <tbody>
         <tr v-for="(robot, index) in cart" :key="index">
           <td class="robot-title">{{robot.head.title}}</td>
-          <td class="cost">{{robot.cost}}</td>
+          <td class="cost">{{ robot.cost | currency('L') }}</td>
         </tr>
       </tbody>
     </table>
@@ -27,7 +27,7 @@
       <tbody>
         <tr v-for="(robot, index) in cartSaleItems" :key="index">
           <td class="robot-title">{{robot.head.title}}</td>
-          <td class="cost">{{robot.cost}}</td>
+          <td class="cost">{{ robot.cost | currency }}</td>
         </tr>
       </tbody>
     </table>
@@ -39,10 +39,10 @@ export default {
   name: "Cart",
   computed: {
     cart() {
-      return this.$store.state.cart;
+      return this.$store.state.robots.cart;
     },
     cartSaleItems() {
-      return this.$store.getters.cartSaleItems;
+      return this.$store.getters["robots/cartSaleItems"];
     }
   }
 };
