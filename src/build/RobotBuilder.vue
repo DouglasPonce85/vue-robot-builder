@@ -1,5 +1,5 @@
 <template>
-  <div class="content">
+  <div v-if="avaliableParts" class="content">
     <div class="preview">
       <div class="preview-content">
         <CollapsibleSection>
@@ -76,12 +76,14 @@
 </template>
 
 <script>
-import avaliableParts from "../data/parts";
 import PartSelector from "./PartSelector.vue";
 import CollapsibleSection from "../shared/CollapsibleSection.vue";
 
 export default {
   name: "RobotBuilder",
+  created() {
+    this.$store.dispatch("getParts");
+  },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
       next(true);
@@ -97,7 +99,6 @@ export default {
     return {
       addedToCart: false,
       cart: [],
-      avaliableParts,
       selectedRobot: {
         head: {},
         leftArm: {},
@@ -114,6 +115,9 @@ export default {
           ? "3px solid red"
           : "3px solid #aaa"
       };
+    },
+    avaliableParts() {
+      return this.$store.state.parts;
     }
   },
   methods: {
@@ -127,7 +131,7 @@ export default {
       const torsoCost = robot.torso.cost ? robot.torso.cost : 0;
       const cost = headCost + leftArmCost + rightArmCost + baseCost + torsoCost;
 
-      this.cart.push(Object.assign({}, robot, { cost }));
+      this.$store.commit("addRobotToCart", Object.assign({}, robot, { cost }));
       this.addedToCart = true;
     }
   }
